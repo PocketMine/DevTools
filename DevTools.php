@@ -4,7 +4,7 @@
 __PocketMine Plugin__
 name=Development Tools
 description=A collection of tools so development for PocketMine-MP is easier
-version=0.3.1
+version=0.4.1
 author=shoghicp
 class=DevTools
 apiversion=5,6,7
@@ -34,6 +34,9 @@ Small Changelog
 
 0.3.1
 - Fixes
+
+0.4.1
+- Added PMF Decoding Function
 
 
 */
@@ -94,6 +97,46 @@ HEADER;
 					break;
 				}
 				$output .= eval(implode(" ", $params));
+				break;
+			case "decodepmf": //TODO: To be moved to DevTools
+				$plugin_name = array_shift($args);
+				$output .= "[DevTools] Decoding PMF plugin \x1b[32m".$plugin_name."\x1b[0m\n";
+				$bool_code_decoded = false;
+				$error_message = "";
+				
+				$c = $this->api->plugin->getInfo($plugin_name);
+				if($c[0]['name'] == $plugin_name)
+				{
+					$fp = fopen($plugin_name."_Decoded.php", "w");
+					if($fp == NULL)
+					{
+						$bool_code_decoded = false;
+						$error_message .= "Could not open new file for storing of decoded pmf\n";
+						break;
+					}
+					if(fwrite($fp, $c[0]['code']) === FALSE)
+					{
+						$bool_code_decoded = false;
+						$error_message .= "Could not write to new file\n";
+						break;
+					}
+					else
+					{
+						$bool_code_decoded = true;
+					}
+					
+				}
+				
+				if($bool_code_decoded === true)
+				{
+					$output .= "[DevTools] Decoding of PMF plugin \x1b[32m".$plugin_name."\x1b[0m Succeeded\n";
+					$output .= "[DevTools] File stored as ".$plugin_name."_Decoded.php in the PocketMine Root directory.\n";
+				}
+				else
+				{
+					$output .= "[DevTools] [Error] Decoding of PMF plugin \x1b[32m".$plugin_name." Failed\n";
+					$output .= "[DevTools] [Error] Error Code: ".$error_message."\n";
+				}
 				break;
 			case "compile":
 				if($issuer !== "console"){
