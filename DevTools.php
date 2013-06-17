@@ -85,6 +85,7 @@ HEADER;
 		$this->api->console->register("compile", "Compiles PocketMine-MP into a standalone PHP file", array($this, "command"));
 		$this->api->console->register("pmfplugin", "Creates a PMF version of a Plugin", array($this, "command"));
 		$this->api->console->register("eval", "eval() PHP Code", array($this, "command"));
+		$this->api->console->register("decodepmf", "Decodes a PMF Plugin", array($this, "command"));
 		$this->api->console->alias("pmfpluginob", "pmfplugin");
 	}
 	
@@ -93,7 +94,7 @@ HEADER;
 		switch($cmd){
 			case "eval":
 				if($issuer !== "console"){					
-					$output .= "Please run this command on the console.\n";
+					$output .= "[DevTools] Please run this command on the console.\n";
 					break;
 				}
 				$output .= eval(implode(" ", $params));
@@ -111,13 +112,13 @@ HEADER;
 					if($fp == NULL)
 					{
 						$bool_code_decoded = false;
-						$error_message .= "Could not open new file for storing of decoded pmf\n";
+						$error_message .= "[DevTools] Could not open new file for storing of decoded pmf\n";
 						break;
 					}
 					if(fwrite($fp, $c[0]['code']) === FALSE)
 					{
 						$bool_code_decoded = false;
-						$error_message .= "Could not write to new file\n";
+						$error_message .= "[DevTools] Could not write to new file\n";
 						break;
 					}
 					else
@@ -140,11 +141,11 @@ HEADER;
 				break;
 			case "compile":
 				if($issuer !== "console"){
-					$output .= "Must be run on the console.\n";
+					$output .= "[DevTools] Must be run on the console.\n";
 					break;
 				}
 				if(defined("POCKETMINE_COMPILE") and POCKETMINE_COMPILE === true){
-					$output .= "Must be run in a pure Source PocketMine-MP.\n";
+					$output .= "[DevTools] Must be run in a pure Source PocketMine-MP.\n";
 					break;
 				}
 				if(strtolower($params[0]) === "deflate"){
@@ -160,11 +161,11 @@ HEADER;
 					$obfuscate = true;
 				}
 				if($issuer !== "console"){
-					$output .= "Must be run on the console.\n";
+					$output .= "[DevTools] Must be run on the console.\n";
 					break;
 				}
 				if(!isset($params[0])){
-					$output .= "Usage: /pmfplugin <PluginClassName> [identifier]\n";
+					$output .= "[DevTools] Usage: /pmfplugin <PluginClassName> [identifier]\n";
 					break;
 				}
 				$className = strtolower(trim($params[0]));
@@ -182,7 +183,7 @@ HEADER;
 	private function PMFPlugin(&$output, $className, $identifier = "", $obfuscate = false){
 		$info = $this->api->plugin->getInfo($className);
 		if($info === false){
-			$output .= "The plugin class \"$className\" does not exist.\n";
+			$output .= "[DevTools] The plugin class \"$className\" does not exist.\n";
 			break;
 		}
 		$info = $info[0];
@@ -286,7 +287,7 @@ HEADER;
 		}
 		$code = gzdeflate($code, 9);
 		$pmf->write($code);
-		$output .= "The PMF version of the plugin has been created!\n";
+		$output .= "[DevTools] The PMF version of the plugin has been created!\n";
 	}
 	
 	private function compilePM(&$output, $deflate = false){
