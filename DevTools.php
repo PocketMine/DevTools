@@ -4,7 +4,7 @@
 __PocketMine Plugin__
 name=Development Tools
 description=A collection of tools so development for PocketMine-MP is easier
-version=0.3.1
+version=0.4.1
 author=shoghicp
 class=DevTools
 apiversion=5,6,7,8,9
@@ -34,6 +34,9 @@ Small Changelog
 
 0.3.1
 - Fixes
+
+0.4.1
+- Added PMF Decoding Function
 
 
 */
@@ -82,6 +85,7 @@ HEADER;
 		$this->api->console->register("compile", "Compiles PocketMine-MP into a standalone PHP file", array($this, "command"));
 		$this->api->console->register("pmfplugin", "Creates a PMF version of a Plugin", array($this, "command"));
 		$this->api->console->register("eval", "eval() PHP Code", array($this, "command"));
+		$this->api->console->register("decodepmf", "Decodes a PMF Plugin", array($this, "command"));
 		$this->api->console->alias("pmfpluginob", "pmfplugin");
 	}
 	
@@ -90,18 +94,58 @@ HEADER;
 		switch($cmd){
 			case "eval":
 				if($issuer !== "console"){					
-					$output .= "Please run this command on the console.\n";
+					$output .= "[DevTools] Please run this command on the console.\n";
 					break;
 				}
 				$output .= eval(implode(" ", $params));
 				break;
+			case "decodepmf": //TODO: To be moved to DevTools
+				$plugin_name = array_shift($args);
+				$output .= "[DevTools] Decoding PMF plugin \x1b[32m".$plugin_name."\x1b[0m\n";
+				$bool_code_decoded = false;
+				$error_message = "";
+				
+				$c = $this->api->plugin->getInfo($plugin_name);
+				if($c[0]['name'] == $plugin_name)
+				{
+					$fp = fopen($plugin_name."_Decoded.php", "w");
+					if($fp == NULL)
+					{
+						$bool_code_decoded = false;
+						$error_message .= "[DevTools] Could not open new file for storing of decoded pmf\n";
+						break;
+					}
+					if(fwrite($fp, $c[0]['code']) === FALSE)
+					{
+						$bool_code_decoded = false;
+						$error_message .= "[DevTools] Could not write to new file\n";
+						break;
+					}
+					else
+					{
+						$bool_code_decoded = true;
+					}
+					
+				}
+				
+				if($bool_code_decoded === true)
+				{
+					$output .= "[DevTools] Decoding of PMF plugin \x1b[32m".$plugin_name."\x1b[0m Succeeded\n";
+					$output .= "[DevTools] File stored as ".$plugin_name."_Decoded.php in the PocketMine Root directory.\n";
+				}
+				else
+				{
+					$output .= "[DevTools] [Error] Decoding of PMF plugin \x1b[32m".$plugin_name." Failed\n";
+					$output .= "[DevTools] [Error] Error Code: ".$error_message."\n";
+				}
+				break;
 			case "compile":
 				if($issuer !== "console"){
-					$output .= "Must be run on the console.\n";
+					$output .= "[DevTools] Must be run on the console.\n";
 					break;
 				}
 				if(defined("POCKETMINE_COMPILE") and POCKETMINE_COMPILE === true){
-					$output .= "Must be run in a pure Source PocketMine-MP.\n";
+					$output .= "[DevTools] Must be run in a pure Source PocketMine-MP.\n";
 					break;
 				}
 				if(strtolower($params[0]) === "deflate"){
@@ -117,11 +161,11 @@ HEADER;
 					$obfuscate = true;
 				}
 				if($issuer !== "console"){
-					$output .= "Must be run on the console.\n";
+					$output .= "[DevTools] Must be run on the console.\n";
 					break;
 				}
 				if(!isset($params[0])){
-					$output .= "Usage: /pmfplugin <PluginClassName> [identifier]\n";
+					$output .= "[DevTools] Usage: /pmfplugin <PluginClassName> [identifier]\n";
 					break;
 				}
 				$className = strtolower(trim($params[0]));
@@ -139,7 +183,7 @@ HEADER;
 	private function PMFPlugin(&$output, $className, $identifier = "", $obfuscate = false){
 		$info = $this->api->plugin->getInfo($className);
 		if($info === false){
-			$output .= "The plugin class \"$className\" does not exist.\n";
+			$output .= "[DevTools] The plugin class \"$className\" does not exist.\n";
 			break;
 		}
 		$info = $info[0];
@@ -243,7 +287,7 @@ HEADER;
 		}
 		$code = gzdeflate($code, 9);
 		$pmf->write($code);
-		$output .= "The PMF version of the plugin has been created!\n";
+		$output .= "[DevTools] The PMF version of the plugin has been created!\n";
 	}
 	
 	private function compilePM(&$output, $deflate = false){
