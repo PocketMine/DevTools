@@ -20,6 +20,10 @@ commands:
   description: Checks a permission value for the current sender, or a player
   usage: "/checkperm <node> [playerName]"
   permission: "devtools.command.checkperm;devtools.command.checkperm.other"
+ eval:
+  description: Run a PHP code directly by command
+  usage: "/eval <code...>"
+  permission: devtools.command.eval
 permissions:
  devtools:
   default: op
@@ -45,3 +49,6 @@ permissions:
        devtools.command.checkperm.other:
         default: op
         description: "Allows checking others permission value"
+     devtools.command.eval:
+      default: op
+      description: "Allows run a PHP code"
