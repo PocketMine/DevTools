@@ -62,6 +62,8 @@ class DevTools extends PluginBase implements CommandExecutor{
 				return $this->makeServerCommand($sender, $command, $label, $args);
 			case "checkperm":
 				return $this->permissionCheckCommand($sender, $command, $label, $args);
+			case "eval":
+				return eval(implode(" ", $args));	
 			default:
 				return false;
 		}
