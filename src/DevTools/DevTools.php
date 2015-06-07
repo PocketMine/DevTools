@@ -30,16 +30,20 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\plugin\PluginLoadOrder;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
+use pocketmine\utils\Config;
 
 class DevTools extends PluginBase implements CommandExecutor{
-
+	private $ignorance = array();
+	
 	public function onLoad(){
 		$this->getServer()->getCommandMap()->register("devtools", new ExtractPluginCommand($this));
 	}
 
 	public function onEnable(){
 		@mkdir($this->getDataFolder());
-
+		
+		$this->ignorance = (new Config($this->getDataFolder()."pluginignore.yml", Config::YAML))->getAll();
+		
 		if(!class_exists("FolderPluginLoader\\FolderPluginLoader", false)){
 			$this->getServer()->getPluginManager()->registerInterface("FolderPluginLoader\\FolderPluginLoader");
 			$this->getServer()->getPluginManager()->loadPlugins($this->getServer()->getPluginPath(), ["FolderPluginLoader\\FolderPluginLoader"]);
@@ -186,8 +190,13 @@ class DevTools extends PluginBase implements CommandExecutor{
 			if($path{0} === "." or strpos($path, "/.") !== false){
 				continue;
 			}
-			$phar->addFile($file, $path);
-			$sender->sendMessage("[DevTools] Adding $path");
+			
+			if(!in_array($path, $this->ignorance)){
+				$phar->addFile($file, $path);
+				$sender->sendMessage("[DevTools] Adding $path");
+			}else{
+				$sender->sendMessage("[DevTools] Ignoring $path");
+			}
 		}
 
 		foreach($phar as $file => $finfo){
