@@ -44,6 +44,7 @@ class DevTools extends PluginBase implements CommandExecutor{
 		$this->getServer()->getPluginManager()->loadPlugins($this->getServer()->getPluginPath(), ["FolderPluginLoader\\FolderPluginLoader"]);
 		$this->getLogger()->info("Registered folder plugin loader");
 		$this->getServer()->enablePlugins(PluginLoadOrder::STARTUP);
+		$this->getServer()->enablePlugins(PluginLoadOrder::POSTWORLD);
 	}
 
 	public function onCommand(CommandSender $sender, Command $command, $label, array $args){
