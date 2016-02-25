@@ -32,7 +32,7 @@ if(ini_get("phar.readonly") == 1){
 
 $folderPath = rtrim(str_replace("\\", "/", realpath($opts["make"])), "/") . "/";
 $relativePath = isset($opts["relative"]) ? rtrim(str_replace("\\", "/", realpath($opts["relative"])), "/") . "/" : $folderPath;
-$pharName = isset($opts["out"]) ? $opts["out"] : "output.phar";
+$pharName = isset($opts["out"]) ? $opts["out"] : basename($folderPath) . ".phar";
 
 
 
