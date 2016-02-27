@@ -104,10 +104,10 @@ class DevTools extends PluginBase implements CommandExecutor{
 	}
 
 	private function makePluginLoader(CommandSender $sender, Command $command, $label, array $args){
-		$pharPath = $this->getDataFolder() . DIRECTORY_SEPARATOR . "FolderPluginLoader.phar";
+		$pharPath = $this->getDataFolder() . "FolderPluginLoader.phar";
 		if(file_exists($pharPath)){
 			$sender->sendMessage("Phar plugin already exists, overwriting...");
-			@unlink($pharPath);
+			@\Phar::unlinkArchive($pharPath);
 		}
 		$phar = new \Phar($pharPath);
 		$phar->setMetadata([
@@ -136,7 +136,7 @@ class DevTools extends PluginBase implements CommandExecutor{
 			}
 		}
 		$phar->stopBuffering();
-		$sender->sendMessage("Folder plugin loader has been created on ".$pharPath);
+		$sender->sendMessage("Folder plugin loader has been created in ".$pharPath);
 		return true;
 	}
 
@@ -153,10 +153,10 @@ class DevTools extends PluginBase implements CommandExecutor{
 			return true;
 		}
 
-		$pharPath = $this->getDataFolder() . DIRECTORY_SEPARATOR . $description->getName()."_v".$description->getVersion().".phar";
+		$pharPath = $this->getDataFolder() . $description->getName()."_v".$description->getVersion().".phar";
 		if(file_exists($pharPath)){
 			$sender->sendMessage("Phar plugin already exists, overwriting...");
-			@unlink($pharPath);
+			@\Phar::unlinkArchive($pharPath);
 		}
 		$phar = new \Phar($pharPath);
 		$phar->setMetadata([
@@ -197,16 +197,16 @@ class DevTools extends PluginBase implements CommandExecutor{
 			}
 		}
 		$phar->stopBuffering();
-		$sender->sendMessage("Phar plugin ".$description->getName() ." v".$description->getVersion()." has been created on ".$pharPath);
+		$sender->sendMessage("Phar plugin ".$description->getName() ." v".$description->getVersion()." has been created in ".$pharPath);
 		return true;
 	}
 
 	private function makeServerCommand(CommandSender $sender, Command $command, $label, array $args){
 		$server = $sender->getServer();
-		$pharPath = $this->getDataFolder() . DIRECTORY_SEPARATOR . $server->getName()."_".$server->getPocketMineVersion().".phar";
+		$pharPath = $this->getDataFolder() . $server->getName()."_".$server->getPocketMineVersion().".phar";
 		if(file_exists($pharPath)){
 			$sender->sendMessage("Phar file already exists, overwriting...");
-			@unlink($pharPath);
+			@\Phar::unlinkArchive($pharPath);
 		}
 		$phar = new \Phar($pharPath);
 		$phar->setMetadata([
@@ -239,7 +239,7 @@ class DevTools extends PluginBase implements CommandExecutor{
 		}
 		$phar->stopBuffering();
 
-		$sender->sendMessage($server->getName() . " " . $server->getPocketMineVersion() . " Phar file has been created on ".$pharPath);
+		$sender->sendMessage($server->getName() . " " . $server->getPocketMineVersion() . " Phar file has been created in ".$pharPath);
 
 		return true;
 	}
