@@ -1,11 +1,11 @@
 name: DevTools
 main: DevTools\DevTools
-version: 1.0
+version: 1.1-iTX
 api: 2.0.0
 load: STARTUP
 author: PocketMine Team & iTX Technologies LLC
 description: Plugin and server development tools for Genisys.
-website: https://github.com/iTXTech/Genisys-DevTools
+website: https://github.com/iTXTech/DevTools
 permissions:
  devtools:
   default: op
