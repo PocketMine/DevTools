@@ -1,0 +1,33 @@
+name: DevTools
+main: DevTools\DevTools
+version: 1.0
+api: 2.0.0
+load: STARTUP
+author: PocketMine Team & iTX Technologies LLC
+description: Plugin and server development tools for Genisys.
+website: https://github.com/iTXTech/Genisys-DevTools
+permissions:
+ devtools:
+  default: op
+  description: "Allows using all the DevTools things"
+  children:
+   devtools.command:
+    default: op
+    description: "Allows use of all DevTools commands"
+    children:
+     devtools.command.extractphar:
+      default: op
+      description: "Allows extracting generic phar files"
+     devtools.command.extractplugin:
+      default: op
+      description: "Allows the extracting phar plugins"
+     devtools.command.loadplugin:
+      default: op
+      description: "Allows manual loading of plugins"
+     devtools.command.makeplugin:
+      default: op
+      description: "Allows the creation of phar plugins"
+     devtools.command.makeserver:
+      default: op
+      description: "Allows the creation of a server phar"
+
