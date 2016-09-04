@@ -1,20 +1,20 @@
 # Plugin and Server Development Tools for Genisys
 
-[![Travis-CI](https://travis-ci.org/iTXTech/Genisys-DevTools.svg?branch=master)](https://travis-ci.org/iTXTech/Genisys-DevTools)
+[![Travis-CI](https://travis-ci.org/iTXTech/Genisys-DevTools.svg?branch=master)](https://travis-ci.org/iTXTech/DevTools)
 
 This plugin is based on the original DevTools plugin by the PocketMine team. The original source code can be found [here](https://github.com/PocketMine/DevTools).
 
-Instructions for installation and use can be found in the [wiki](https://github.com/iTXTech/Genisys-DevTools/wiki).
+Instructions for installation and use can be found in the [wiki](https://github.com/iTXTech/DevTools/wiki).
 
 ## Create .phar from console
-Download [Genisys-DevTools.phar](https://github.com/iTXTech/Genisys-DevTools/releases)
+Download [DevTools.phar](https://github.com/iTXTech/DevTools/releases)
 
 	php -dphar.readonly=0 DevTools.phar \
 	--make="./plugin/" \
 	--relative="./plugin/" \
 	--out "plugin.phar"
 
-or [ConsoleScript.php](https://github.com/iTXTech/Genisys-DevTools/blob/master/Genisys-DevTools/src/DevTools/ConsoleScript.php)
+or [ConsoleScript.php](https://github.com/iTXTech/DevTools/blob/master/Genisys-DevTools/src/DevTools/ConsoleScript.php)
 
 	php -dphar.readonly=0 ConsoleScript.php \
 	--make="./plugin/" \
