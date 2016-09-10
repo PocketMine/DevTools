@@ -41,12 +41,10 @@ class DevTools extends PluginBase{
 	public function onEnable(){
 		@mkdir($this->getWorkingDirectory());
 
-		if(!class_exists("FolderPluginLoader\\FolderPluginLoader", false)){
-			$this->getServer()->getPluginManager()->registerInterface("FolderPluginLoader\\FolderPluginLoader");
-			$this->getServer()->getPluginManager()->loadPlugins($this->getServer()->getPluginPath(), ["FolderPluginLoader\\FolderPluginLoader"]);
-			$this->getLogger()->info("Registered folder plugin loader");
-			$this->getServer()->enablePlugins(PluginLoadOrder::STARTUP);
-		}
+		$this->getServer()->getPluginManager()->registerInterface("FolderPluginLoader\\FolderPluginLoader");
+		$this->getServer()->getPluginManager()->loadPlugins($this->getServer()->getPluginPath(), ["FolderPluginLoader\\FolderPluginLoader"]);
+		$this->getLogger()->info("Registered folder plugin loader");
+		$this->getServer()->enablePlugins(PluginLoadOrder::STARTUP);
 	}
 
 	public function getWorkingDirectory(){
