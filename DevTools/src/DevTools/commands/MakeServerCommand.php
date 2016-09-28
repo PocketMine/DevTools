@@ -40,7 +40,6 @@ class MakeServerCommand extends DevToolsCommand{
 			"name" => $server->getName(),
 			"version" => $server->getPocketMineVersion(),
 			"api" => $server->getApiVersion(),
-			"geniapi" => $server->getGeniApiVersion(),
 			"minecraft" => $server->getVersion(),
 			"protocol" => Info::CURRENT_PROTOCOL,
 			"creationDate" => time()
