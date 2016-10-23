@@ -19,16 +19,16 @@ namespace DevTools\commands;
 
 use DevTools\DevTools;
 use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
 use pocketmine\command\PluginIdentifiableCommand;
 
 abstract class DevToolsCommand extends Command implements PluginIdentifiableCommand{
 	/** @var \pocketmine\plugin\Plugin */
 	private $owningPlugin;
 
-	public function __construct($name, DevTools $plugin){
-		parent::__construct($name);
+	public function __construct(DevTools $plugin, $name, $description = "", $usageMessage = null, array $aliases = []){
+		parent::__construct($name, $description, $usageMessage, $aliases);
 		$this->owningPlugin = $plugin;
-		$this->usageMessage = "";
 	}
 
 	public function getPlugin(){

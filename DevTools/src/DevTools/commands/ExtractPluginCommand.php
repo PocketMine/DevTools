@@ -19,6 +19,7 @@ namespace DevTools\commands;
 
 use DevTools\DevTools;
 use pocketmine\command\CommandSender;
+use pocketmine\event\TranslationContainer;
 use pocketmine\plugin\PharPluginLoader;
 use pocketmine\plugin\Plugin;
 use pocketmine\Server;
@@ -26,25 +27,25 @@ use pocketmine\utils\TextFormat;
 
 class ExtractPluginCommand extends DevToolsCommand{
 
-	public function __construct(DevTools $plugin){
-		parent::__construct("extractplugin", $plugin);
-		$this->setUsage("/extractplugin <pluginName>");
-		$this->setDescription("Extracts the source code from a Phar plugin");
+	public function __construct(DevTools $plugin, $name){
+		parent::__construct(
+			$plugin,
+			$name,
+			"Extract source code from a plugin",
+			"/extract <pluginName>",
+			["ep"]
+		);
 		$this->setPermission("devtools.command.extractplugin");
 	}
 
-	public function execute(CommandSender $sender, $commandLabel, array $args){
-		if(!$this->getPlugin()->isEnabled()){
-			return false;
-		}
-
+	public function execute(CommandSender $sender, $currentAlias, array $args){
 		if(!$this->testPermission($sender)){
-			return false;
+			return true;
 		}
 
 		if(count($args) === 0){
-			$sender->sendMessage(TextFormat::RED . "Usage: ".$this->usageMessage);
-			return true;
+			$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
+			return false;
 		}
 
 		$pluginName = trim(implode(" ", $args));
@@ -59,9 +60,9 @@ class ExtractPluginCommand extends DevToolsCommand{
 			return true;
 		}
 
-		$folderPath = $this->getPlugin()->getDataFolder() . DIRECTORY_SEPARATOR . $description->getName()."_v".$description->getVersion()."/";
+		$folderPath = $this->getPlugin()->getWorkingDirectory() . $description->getName()."_v".$description->getVersion()."/";
 		if(file_exists($folderPath)){
-			$sender->sendMessage("Plugin already exists, overwriting...");
+			$sender->sendMessage("Plugin files already exist, overwriting...");
 		}else{
 			@mkdir($folderPath);
 		}
@@ -76,7 +77,7 @@ class ExtractPluginCommand extends DevToolsCommand{
 			@mkdir(dirname($folderPath . str_replace($pharPath, "", $path)), 0755, true);
 			file_put_contents($folderPath . str_replace($pharPath, "", $path), file_get_contents($path));
 		}
-		$sender->sendMessage("Source plugin ".$description->getName() ." v".$description->getVersion()." has been created on ".$folderPath);
+		$sender->sendMessage("Plugin ".$description->getName() ." v".$description->getVersion()." has been extracted into ".$folderPath);
 		return true;
 	}
 }

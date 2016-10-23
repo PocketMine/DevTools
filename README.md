@@ -1,6 +1,29 @@
-# Development Tools <em>for PocketMine-MP</em>
+# Plugin and Server Development Tools for Genisys
 
-### Warning: This version is for the new PocketMine-MP API
+[![Travis-CI](https://travis-ci.org/iTXTech/DevTools.svg?branch=master)](https://travis-ci.org/iTXTech/DevTools)
+[![GitLab CI](https://gitlab.com/iTXTech/DevTools/badges/master/build.svg)](https://gitlab.com/itxtech/DevTools/pipelines?scope=branches)
+
+This plugin is based on the original DevTools plugin by the PocketMine team. The original source code can be found [here](https://github.com/PocketMine/DevTools).
+
+Instructions for installation and use can be found in the [wiki](https://github.com/iTXTech/DevTools/wiki).
+
+## Create .phar from console
+Download [DevTools.phar](https://github.com/iTXTech/DevTools/releases)
+
+	php -dphar.readonly=0 DevTools.phar \
+	--make="./plugin/" \
+	--relative="./plugin/" \
+	--out "plugin.phar"
+
+or [ConsoleScript.php](https://github.com/iTXTech/DevTools/blob/master/Genisys-DevTools/src/DevTools/ConsoleScript.php)
+
+	php -dphar.readonly=0 ConsoleScript.php \
+	--make="./plugin/" \
+	--relative="./plugin/" \
+	--out "plugin.phar"
+	
+	
+## Licence
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Lesser General Public License as published by
@@ -14,28 +37,3 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-## Installation
-- Drop it into the PocketMine's `plugins/` folder.
-- Restart the server. The plugin will be loaded
-
-## Usage
-* _/makeplugin <pluginName>_: Creates a Phar plugin archive for its distribution
-* _/makeserver_: Creates a PocketMine-MP Phar archive
-* _/checkperm <node> [playerName]_: Checks a permission node
-
-## Create .phar from console
-Download [DevTools.phar](https://github.com/PocketMine/DevTools/releases)
-
-	php -dphar.readonly=0 DevTools.phar \
-	--make="./plugin/" \
-	--relative="./plugin/" \
-	--out "plugin.phar"
-
-or [ConsoleScript.php](https://github.com/PocketMine/DevTools/blob/master/src/DevTools/ConsoleScript.php)
-
-	php -dphar.readonly=0 ConsoleScript.php \
-	--make="./plugin/" \
-	--relative="./plugin/" \
-	--out "plugin.phar"
