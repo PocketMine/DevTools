@@ -15,8 +15,6 @@
  * GNU General Public License for more details.
 */
 
-const VERSION = "1.11.0";
-
 $opts = getopt("", ["make:", "relative:", "out:", "entry:", "compress"]);
 
 if(!isset($opts["make"])){
@@ -43,31 +41,33 @@ if(!is_dir($folderPath)){
 
 echo "\nCreating ".$pharName."...\n";
 $phar = new \Phar($pharName);
-if($metadata["name"] === "DevTools"){
+
+if(file_exists($relativePath . "plugin.yml")){
+	$metadata = yaml_parse_file($relativePath."plugin.yml");
+}else{
+	echo "No plugin.yml found in relative path!\n";
+	$metadata = [];
+}
+
+if($metadata["name"] === "Genisys-DevTools"){
 	$phar->setStub('<?php require("phar://". __FILE__ ."/src/DevTools/ConsoleScript.php"); __HALT_COMPILER();');
 }elseif(isset($opts["entry"]) and $opts["entry"] != null){
 	$entry = addslashes(str_replace("\\", "/", $opts["entry"]));
 	echo "Setting entry point to ".$entry."\n";
 	$phar->setStub('<?php require("phar://". __FILE__ ."/'.$entry.'"); __HALT_COMPILER();');
 }else{
-    if(file_exists($relativePath . "plugin.yml")){
-        $metadata = yaml_parse_file($relativePath."plugin.yml");
-        $phar->setMetadata([
-            "name" => $metadata["name"],
-            "version" => $metadata["version"],
-            "main" => $metadata["main"],
-            "api" => $metadata["api"],
-            "depend" => (isset($metadata["depend"]) ? $metadata["depend"] : ""),
-            "description" => (isset($metadata["description"]) ?$metadata["description"] : ""),
-            "authors" => (isset($metadata["authors"]) ? $metadata["authors"] : ""),
-            "website" => (isset($metadata["website"]) ? $metadata["website"] : ""),
-            "creationDate" => time()
-        ]);
-        $phar->setStub('<?php echo "PocketMine-MP plugin '. $metadata["name"] .' v'. $metadata["version"].'\nThis file has been generated using DevTools v" . $version . " at '.date("r").'\n----------------\n";if(extension_loaded("phar")){$phar = new \Phar(__FILE__);foreach($phar->getMetadata() as $key => $value){echo ucfirst($key).": ".(is_array($value) ? implode(", ", $value):$value)."\n";}} __HALT_COMPILER();');
-    }else{
-        echo "Missing entry point or plugin.yml\n";
-        exit(1);
-    }
+	$phar->setMetadata([
+		"name" => $metadata["name"],
+		"version" => $metadata["version"],
+		"main" => $metadata["main"],
+		"api" => $metadata["api"],
+		"depend" => (isset($metadata["depend"]) ? $metadata["depend"] : ""),
+		"description" => (isset($metadata["description"]) ?$metadata["description"] : ""),
+		"authors" => (isset($metadata["authors"]) ? $metadata["authors"] : ""),
+		"website" => (isset($metadata["website"]) ? $metadata["website"] : ""),
+		"creationDate" => time()
+	]);
+	$phar->setStub('<?php echo "PocketMine-MP plugin '. $metadata["name"] .' v'. $metadata["version"].'\nThis file has been generated using DevTools v" . $version . " at '.date("r").'\n----------------\n";if(extension_loaded("phar")){$phar = new \Phar(__FILE__);foreach($phar->getMetadata() as $key => $value){echo ucfirst($key).": ".(is_array($value) ? implode(", ", $value):$value)."\n";}} __HALT_COMPILER();');
 }
 $phar->setSignatureAlgorithm(\Phar::SHA1);
 $phar->startBuffering();
@@ -76,17 +76,15 @@ $maxLen = 0;
 $count = 0;
 foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folderPath)) as $file){
 	$path = rtrim(str_replace(["\\", $relativePath], ["/", ""], $file), "/");
-	if($path{0} === "." or strpos($path, "/.") !== false){
+	if($path{0} === "." or strpos($path, "/.") !== false or strpos($path, "tests") !== false){
 		continue;
 	}
 	$phar->addFile($file, $path);
-	if(strlen($path) > $maxLen){
-		$maxLen = strlen($path);
-	}
+	$maxLen = max($maxLen, strlen($path));	
 	echo "\r[".(++$count)."] ".str_pad($path, $maxLen, " ");
 }
 
 $phar->stopBuffering();
 
-echo "Done!\n";
+echo "\nDone!\n";
 exit(0);

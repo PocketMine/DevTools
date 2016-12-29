@@ -1,0 +1,13 @@
+image: itxtech/docker-env-genisys
+
+stages:
+ - package
+
+phar:
+  stage: package
+  script:
+   - ./tests/ci.sh
+   - mv build/DevTools*.phar .
+  artifacts:
+    paths:
+     - DevTools*.phar
